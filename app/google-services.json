@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "122698383695",
+    "project_id": "tus-book-swap",
+    "storage_bucket": "tus-book-swap.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:122698383695:android:c6f1afd0d9bb14e7c2453a",
+        "android_client_info": {
+          "package_name": "com.example.tusbookswap"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJxPjYM44EAqQECUT_2ZTENWU0HHO0EJA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
