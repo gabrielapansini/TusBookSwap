@@ -208,7 +208,7 @@ fun SignUpScreen(navController: NavController, viewModel: AuthRegViewModel = vie
 
         // Login Page Button
         Button(
-            onClick = { navController.navigate(com.example.tusbookswap.ui.Screen.SignUpScreen.route) },
+            onClick = { navController.navigate(com.example.tusbookswap.ui.Screen.LoginScreen.route) },
             modifier = Modifier.padding(10.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, contentColor = Color.Black),
         ) {

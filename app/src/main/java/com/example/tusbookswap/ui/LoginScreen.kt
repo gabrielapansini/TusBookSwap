@@ -102,7 +102,7 @@ fun LoginScreen(navController:NavController, viewModel: AuthRegViewModel = viewM
             ) {
 
             Text(
-                text = "TUS POMODORO",
+                text = "TUS Book Swap",
                 textAlign = TextAlign.Center,
                 fontSize = 30.sp,
                 textDecoration = TextDecoration.None,
