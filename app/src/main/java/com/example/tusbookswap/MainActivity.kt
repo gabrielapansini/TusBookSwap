@@ -1,5 +1,6 @@
 package com.example.tusbookswap
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,13 +37,21 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.tusbookswap.ui.AccountScreen
+import com.example.tusbookswap.ui.AddBookToSwap
+import com.example.tusbookswap.ui.AddNewBookDetails
 import com.example.tusbookswap.ui.AuthRegViewModel
 import com.example.tusbookswap.ui.BookDescriptionScreen
+import com.example.tusbookswap.ui.BooksListeningsScreen
+import com.example.tusbookswap.ui.EditAccountScreen
 import com.example.tusbookswap.ui.FavoriteGenresScreen
 import com.example.tusbookswap.ui.HomeScreen
 import com.example.tusbookswap.ui.LoginScreen
+import com.example.tusbookswap.ui.MeetUpScreen
 import com.example.tusbookswap.ui.Screen
+import com.example.tusbookswap.ui.Screen.EditAccount
 import com.example.tusbookswap.ui.SignUpScreen
+import com.example.tusbookswap.ui.WishListScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,7 +82,6 @@ fun NavGraph(startDestination: String = Screen.SignUpScreen.route) {
 
     Scaffold(
         bottomBar = {
-            // Show BottomNavigationBar only on specific routes
             when (navController.currentBackStackEntry?.destination?.route) {
                 Screen.Home.route, Screen.FavoriteGenresScreen.route -> {
                     BottomNavigationBar(navController)
@@ -90,19 +99,40 @@ fun NavGraph(startDestination: String = Screen.SignUpScreen.route) {
             composable(Screen.Home.route) { HomeScreen(navController) }
             composable(Screen.FavoriteGenresScreen.route) { FavoriteGenresScreen(navController) }
             composable(
-                "book_description_screen/{bookTitle}?bookImage={bookImage}&bookAuthor={bookAuthor}",
+                "book_description_screen/{bookTitle}?bookImage={bookImage}",
                 arguments = listOf(
                     navArgument("bookTitle") { type = NavType.StringType },
-                    navArgument("bookImage") { type = NavType.IntType },
-                    navArgument("bookAuthor") { type = NavType.StringType }
+                    navArgument("bookImage") { type = NavType.IntType; defaultValue = R.drawable.book1 }
                 )
             ) { backStackEntry ->
-                BookDescriptionScreen(navController)
+                val bookTitle = backStackEntry.arguments?.getString("bookTitle") ?: "Unknown Book"
+                val bookImage = backStackEntry.arguments?.getInt("bookImage") ?: R.drawable.book1
+                BookDescriptionScreen(navController = navController, bookTitle = bookTitle, bookImage = bookImage)
             }
+            composable(Screen.MeetUpScreen.route) { MeetUpScreen(navController) }
+            composable(Screen.AddBookToSwap.route) {
+                AddBookToSwap(navController)
+            }
+            composable(
+                "${Screen.AddNewBookDetails.route}?imageUri={imageUri}",
+                arguments = listOf(
+                    navArgument("imageUri") { type = NavType.StringType; nullable = true }
+                )
+            ) { backStackEntry ->
+                val imageUriString = backStackEntry.arguments?.getString("imageUri")
+                val imageUri = imageUriString?.let { Uri.parse(it) }
+                AddNewBookDetails(navController, imageUri)
+            }
+            composable(Screen.AccountScreen.route) { AccountScreen(navController) }
+            composable(Screen.EditAccount.route) { EditAccountScreen(navController) }
+            composable(Screen.WishList.route) { WishListScreen(navController) }
+            composable(Screen.BooksListeningsScreen.route) { BooksListeningsScreen(navController) }
+
 
         }
     }
 }
+
 
 
 
@@ -160,13 +190,36 @@ fun BottomNavigationBar(navController: NavController) {
             selected = selectedItem == 1,
             onClick = {
                 selectedItem = 1
-                navController.navigate(Screen.FavoriteGenresScreen.route) {
+                navController.navigate(Screen.AddBookToSwap.route) {
                     popUpTo(Screen.Home.route) { saveState = true }
                 }
             },
             colors = NavigationBarItemDefaults.colors(indicatorColor = TransparentGold)
         )
-
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    Icons.Default.FavoriteBorder,
+                    contentDescription = "WishList",
+                    tint = if (selectedItem == 2) Color.Black else BottomNavColor
+                )
+            },
+            label = {
+                Text(
+                    "WishList",
+                    color = if (selectedItem == 2) Color.Black else BottomNavColor,
+                    fontWeight = if (selectedItem == 2) FontWeight.Bold else FontWeight.Normal
+                )
+            },
+            selected = selectedItem == 2,
+            onClick = {
+                selectedItem = 2
+                navController.navigate(Screen.WishList.route) {
+                    popUpTo(Screen.Home.route) { saveState = true }
+                }
+            },
+            colors = NavigationBarItemDefaults.colors(indicatorColor = TransparentGold)
+        )
         NavigationBarItem(
             icon = {
                 Icon(
@@ -185,7 +238,7 @@ fun BottomNavigationBar(navController: NavController) {
             selected = selectedItem == 2,
             onClick = {
                 selectedItem = 2
-                navController.navigate(Screen.LoginScreen.route) {
+                navController.navigate(Screen.AccountScreen.route) {
                     popUpTo(Screen.Home.route) { saveState = true }
                 }
             },
@@ -193,7 +246,6 @@ fun BottomNavigationBar(navController: NavController) {
         )
     }
 }
-
 
 
 @Composable

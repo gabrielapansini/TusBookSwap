@@ -56,9 +56,10 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("androidx.compose.ui:ui")
-    //Navigation - TUS Pomodoro
+    //Navigation - TUS BookSwap
     implementation("androidx.navigation:navigation-compose:2.7.5")
     //End Navigation
+
 
     //ViewModel /LiveData
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
@@ -66,6 +67,10 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0-rc01")
     implementation("androidx.compose.runtime:runtime-livedata:1.6.0-beta02")
     //End ViewModel /LiveData
+
+
+    implementation ("io.coil-kt:coil-compose:2.2.2")// Latest version as of now
+
 
     implementation("com.google.firebase:firebase-firestore:24.10.0")
     implementation("androidx.compose.ui:ui-graphics")
