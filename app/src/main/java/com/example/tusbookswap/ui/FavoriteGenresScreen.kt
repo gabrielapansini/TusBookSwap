@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
+import com.example.tusbookswap.BottomNavigationBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 // Define custom colors
 private val TransparentGold = Color(0xB3A49461) // ARGB: 70% (B3 in hex)
@@ -33,7 +36,7 @@ private val BottomNavColor = Color(0xFF48454E) // 48454E
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavoriteGenresScreen() {
+fun FavoriteGenresScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -62,7 +65,7 @@ fun FavoriteGenresScreen() {
             )
         },
         bottomBar = {
-            BottomNavigationBar()
+            BottomNavigationBar(navController)
         }
     ) { innerPadding ->
         Column(
@@ -114,101 +117,12 @@ fun FavoriteGenresScreen() {
     }
 }
 
-@Composable
-fun BottomNavigationBar() {
-    var selectedItem by remember { mutableStateOf(0) }
-    NavigationBar(
-        containerColor = Color.White // Set the background color of the bottom navigation bar to white
-    ) {
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    Icons.Default.Home,
-                    contentDescription = "Home",
-                    tint = if (selectedItem == 0) Color.Black else BottomNavColor
-                )
-            },
-            label = {
-                Text(
-                    "Home",
-                    color = if (selectedItem == 0) Color.Black else BottomNavColor,
-                    fontWeight = if (selectedItem == 0) FontWeight.Bold else FontWeight.Normal
-                )
-            },
-            selected = selectedItem == 0,
-            onClick = { selectedItem = 0 },
-            colors = NavigationBarItemDefaults.colors(
-                indicatorColor = TransparentGold // Rounded rectangle background for selected item
-            )
-        )
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    Icons.Default.AddCircle,
-                    contentDescription = "Swap",
-                    tint = if (selectedItem == 1) Color.Black else BottomNavColor
-                )
-            },
-            label = {
-                Text(
-                    "Swap",
-                    color = if (selectedItem == 1) Color.Black else BottomNavColor,
-                    fontWeight = if (selectedItem == 1) FontWeight.Bold else FontWeight.Normal
-                )
-            },
-            selected = selectedItem == 1,
-            onClick = { selectedItem = 1 },
-            colors = NavigationBarItemDefaults.colors(
-                indicatorColor = TransparentGold
-            )
-        )
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    Icons.Default.Favorite,
-                    contentDescription = "Wishlist",
-                    tint = if (selectedItem == 2) Color.Black else BottomNavColor
-                )
-            },
-            label = {
-                Text(
-                    "Wishlist",
-                    color = if (selectedItem == 2) Color.Black else BottomNavColor,
-                    fontWeight = if (selectedItem == 2) FontWeight.Bold else FontWeight.Normal
-                )
-            },
-            selected = selectedItem == 2,
-            onClick = { selectedItem = 2 },
-            colors = NavigationBarItemDefaults.colors(
-                indicatorColor = TransparentGold
-            )
-        )
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    Icons.Default.Person,
-                    contentDescription = "Account",
-                    tint = if (selectedItem == 3) Color.Black else BottomNavColor
-                )
-            },
-            label = {
-                Text(
-                    "Account",
-                    color = if (selectedItem == 3) Color.Black else BottomNavColor,
-                    fontWeight = if (selectedItem == 3) FontWeight.Bold else FontWeight.Normal
-                )
-            },
-            selected = selectedItem == 3,
-            onClick = { selectedItem = 3 },
-            colors = NavigationBarItemDefaults.colors(
-                indicatorColor = TransparentGold
-            )
-        )
-    }
-}
+
+
 
 @Preview(showBackground = true)
 @Composable
 fun FavoriteGenresScreenPreview() {
-    FavoriteGenresScreen()
+    val navController = rememberNavController()
+    FavoriteGenresScreen(navController)
 }

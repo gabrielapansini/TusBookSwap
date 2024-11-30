@@ -13,8 +13,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
+import com.example.tusbookswap.BottomNavigationBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,6 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.tusbookswap.R
 
 // Define custom colors
@@ -35,7 +37,7 @@ private val FavoriteIconColor = Color.Red
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -64,7 +66,7 @@ fun HomeScreen() {
             )
         },
         bottomBar = {
-            BottomNavigationBar()
+            BottomNavigationBar(navController)
         }
     ) { innerPadding ->
         Column(
@@ -96,10 +98,14 @@ fun HomeScreen() {
                         Pair(R.drawable.book3, "The First Time Traveller"),
                         Pair(R.drawable.book4, "Art"),
                         Pair(R.drawable.book5, "My Prayer Journal"),
-                        Pair(R.drawable.book6, "The History of Beaux-Arts Architecture")
+                        Pair(R.drawable.book6, "Beaux-Arts Architecture")
                     )
                 ) { book ->
-                    BookCard(bookImage = book.first, bookTitle = book.second)
+                    BookCard(
+                        navController = navController,
+                        bookImage = book.first,
+                        bookTitle = book.second
+                    )
                 }
             }
         }
@@ -107,23 +113,31 @@ fun HomeScreen() {
 }
 
 @Composable
-fun BookCard(bookImage: Int, bookTitle: String) {
+fun BookCard(navController: NavController, bookImage: Int, bookTitle: String, bookAuthor: String = "Unknown Author") {
     Card(
         modifier = Modifier
             .padding(8.dp)
-            .fillMaxWidth()
-            .clickable { /* Handle book click */ },
+            .size(160.dp)
+            .clickable {
+                // Pass the details as arguments
+                navController.navigate(
+                    "book_description_screen/$bookTitle?bookImage=$bookImage&bookAuthor=$bookAuthor"
+                )
+            },
         colors = CardDefaults.cardColors(containerColor = CardBackgroundColor),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Box(modifier = Modifier.padding(8.dp)) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Box(
                     modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.TopEnd
+                    contentAlignment = Alignment.Center
                 ) {
                     Image(
                         painter = painterResource(id = bookImage),
@@ -141,6 +155,7 @@ fun BookCard(bookImage: Int, bookTitle: String) {
                             .clip(CircleShape)
                             .background(Color.White)
                             .padding(4.dp)
+                            .align(Alignment.TopEnd)
                     )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -148,17 +163,21 @@ fun BookCard(bookImage: Int, bookTitle: String) {
                     text = bookTitle,
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp
+                        fontSize = 11.sp
                     ),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 4.dp)
                 )
             }
         }
     }
 }
 
+
+
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen()
+    val navController = rememberNavController()
+    HomeScreen(navController)
 }

@@ -28,6 +28,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -60,12 +61,11 @@ import com.example.tusbookswap.ui.theme.CustomColor
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController:NavController, viewModel: AuthRegViewModel = viewModel()) {
-    var emailState by remember{mutableStateOf("")}
-    var passwordState by remember{mutableStateOf("")}
+fun LoginScreen(navController: NavController, viewModel: AuthRegViewModel = viewModel()) {
+    var emailState by remember { mutableStateOf("") }
+    var passwordState by remember { mutableStateOf("") }
     val errorMessage by viewModel.errorMessage.observeAsState()
-
-    val userId = viewModel.userId.observeAsState()
+    val userId by viewModel.userId.observeAsState()
 
     // Column that holds the entire login screen
     Column(
@@ -76,6 +76,7 @@ fun LoginScreen(navController:NavController, viewModel: AuthRegViewModel = viewM
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        // Display error messages
         if (errorMessage != null) {
             AlertDialog(
                 onDismissRequest = { viewModel.errorMessage.value = null },
@@ -88,19 +89,16 @@ fun LoginScreen(navController:NavController, viewModel: AuthRegViewModel = viewM
                 }
             )
         }
-        // Box and Text elements above the logo
+
+        // App Title
         Button(
-            onClick = {
-                // TO DO
-            },
+            onClick = { /* No action required here */ },
             modifier = Modifier
                 .width(294.dp)
                 .height(78.dp)
                 .clip(RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp, bottomStart = 40.dp, bottomEnd = 40.dp)),
             colors = ButtonDefaults.buttonColors(containerColor = CustomColor, contentColor = Color.White),
-
-            ) {
-
+        ) {
             Text(
                 text = "TUS Book Swap",
                 textAlign = TextAlign.Center,
@@ -113,16 +111,15 @@ fun LoginScreen(navController:NavController, viewModel: AuthRegViewModel = viewM
                     .fillMaxHeight()
                     .padding(top = 18.dp)
                     .alpha(1f),
-                color = Color.White, // Text color
+                color = Color.White,
                 fontWeight = FontWeight.Black,
                 fontStyle = FontStyle.Normal,
             )
         }
 
-        // Spacer for vertical spacing
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Logo ref: I got the image from the TUS branding
+        // Logo
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = null,
@@ -133,7 +130,6 @@ fun LoginScreen(navController:NavController, viewModel: AuthRegViewModel = viewM
                 .clip(MaterialTheme.shapes.medium)
         )
 
-        // Spacer for vertical spacing
         Spacer(modifier = Modifier.height(16.dp))
 
         // Email Field
@@ -149,10 +145,9 @@ fun LoginScreen(navController:NavController, viewModel: AuthRegViewModel = viewM
                 .padding(8.dp)
         )
 
-        // Spacer for vertical spacing
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Password field
+        // Password Field
         OutlinedTextField(
             value = passwordState,
             onValueChange = { passwordState = it },
@@ -169,41 +164,42 @@ fun LoginScreen(navController:NavController, viewModel: AuthRegViewModel = viewM
                 .padding(8.dp)
         )
 
-        // Spacer for vertical spacing
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Login button
+        // Login Button
         Button(
-            onClick = { viewModel.loginUser(emailState.lowercase(), passwordState)
-
-                // Navigate to the Pomodoro screen if the userId is not null
-                if (userId.value != null) {
-                    navController.navigate("pomodoro/${userId.value}")
-                } },
+            onClick = {
+                viewModel.loginUser(emailState.lowercase(), passwordState)
+            },
             modifier = Modifier.padding(10.dp),
             colors = ButtonDefaults.buttonColors(containerColor = CustomColor, contentColor = Color.White),
         ) {
             Text(text = "Login")
         }
 
-        // Login Page Button
+        // Observe userId and navigate to HomeScreen
+        if (userId != null) {
+            LaunchedEffect(userId) {
+                navController.navigate(com.example.tusbookswap.ui.Screen.Home.route) {
+                    popUpTo(com.example.tusbookswap.ui.Screen.LoginScreen.route) { inclusive = true }
+                }
+            }
+        }
+
+        // SignUp Button
         Button(
-            onClick = { navController.navigate(com.example.tusbookswap.ui.Screen.LoginScreen.route) },
+            onClick = { navController.navigate(com.example.tusbookswap.ui.Screen.SignUpScreen.route) },
             modifier = Modifier.padding(10.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, contentColor = Color.Black),
         ) {
             Text(
-                text = "Don't have an account, Register",
+                text = "Don't have an account? Register",
                 modifier = Modifier
                     .padding(4.dp)
             )
         }
     }
-
-
-
 }
-
 
 
 @Preview(showBackground = true)

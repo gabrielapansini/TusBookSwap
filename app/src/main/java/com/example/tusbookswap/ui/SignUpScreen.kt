@@ -28,6 +28,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -62,14 +63,12 @@ import com.example.tusbookswap.TUSBookSwapTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(navController: NavController, viewModel: AuthRegViewModel = viewModel()) {
-    var emailState by remember{mutableStateOf("")}
-    var passwordState by remember{mutableStateOf("")}
+    var emailState by remember { mutableStateOf("") }
+    var passwordState by remember { mutableStateOf("") }
     val errorMessage by viewModel.errorMessage.observeAsState()
-
     val userId = viewModel.userId.observeAsState()
 
-
-    // Column that holds the entire sign up screen
+    // Column that holds the entire sign-up screen
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -78,6 +77,7 @@ fun SignUpScreen(navController: NavController, viewModel: AuthRegViewModel = vie
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        // Display error messages
         if (errorMessage != null) {
             AlertDialog(
                 onDismissRequest = { viewModel.errorMessage.value = null },
@@ -90,11 +90,10 @@ fun SignUpScreen(navController: NavController, viewModel: AuthRegViewModel = vie
                 }
             )
         }
-        // Box and Text elements above the logo
+
+        // App Title
         Button(
-            onClick = {
-                // TO DO
-            },
+            onClick = { /* No action required here */ },
             modifier = Modifier
                 .width(294.dp)
                 .height(78.dp)
@@ -106,10 +105,8 @@ fun SignUpScreen(navController: NavController, viewModel: AuthRegViewModel = vie
                         bottomEnd = 40.dp
                     )
                 ),
-            colors = ButtonDefaults.buttonColors(containerColor = CustomColor, contentColor = Color.White),
-
-            ) {
-
+            colors = ButtonDefaults.buttonColors(containerColor = CustomColor, contentColor = Color.White)
+        ) {
             Text(
                 text = "TUS Book Swap",
                 textAlign = TextAlign.Center,
@@ -122,13 +119,12 @@ fun SignUpScreen(navController: NavController, viewModel: AuthRegViewModel = vie
                     .fillMaxHeight()
                     .padding(top = 18.dp)
                     .alpha(1f),
-                color = Color.White, // Text color
+                color = Color.White,
                 fontWeight = FontWeight.Black,
-                fontStyle = FontStyle.Normal,
+                fontStyle = FontStyle.Normal
             )
         }
 
-        // Spacer for vertical spacing
         Spacer(modifier = Modifier.height(16.dp))
 
         // Logo
@@ -142,11 +138,9 @@ fun SignUpScreen(navController: NavController, viewModel: AuthRegViewModel = vie
                 .clip(MaterialTheme.shapes.medium)
         )
 
-        // Spacer for vertical spacing
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Username field
-
+        // Email Field
         OutlinedTextField(
             value = emailState,
             onValueChange = { emailState = it },
@@ -159,11 +153,9 @@ fun SignUpScreen(navController: NavController, viewModel: AuthRegViewModel = vie
                 .padding(8.dp)
         )
 
-        // Spacer for vertical spacing
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Password field
-
+        // Password Field
         OutlinedTextField(
             value = passwordState,
             onValueChange = { passwordState = it },
@@ -180,50 +172,43 @@ fun SignUpScreen(navController: NavController, viewModel: AuthRegViewModel = vie
                 .padding(8.dp)
         )
 
-        // Spacer for vertical spacing
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Sign Up button
+        // Sign Up Button
         Button(
-            onClick = { viewModel.registerUser(emailState.lowercase(), passwordState)
-
-                // Navigate to the Pomodoro screen if the userId is not null
-                if (userId.value != null) {
-                    navController.navigate("pomodoro/${userId.value}")
-
-                    /*Log out functionality
-                    *
-                    * viewModel.logoutUser()
-                        // Additional logic, such as navigating to the login screen
-                        navController.navigate(Screen.LoginScreen.route)
-                       */
-                }
-
+            onClick = {
+                viewModel.registerUser(emailState.lowercase(), passwordState)
             },
             modifier = Modifier.padding(10.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = CustomColor, contentColor = Color.White),
+            colors = ButtonDefaults.buttonColors(containerColor = CustomColor, contentColor = Color.White)
         ) {
             Text(text = "SignUp")
         }
 
-        // Login Page Button
+        // Observe userId and navigate to FavoriteGenresScreen when it changes
+        val userIdState by viewModel.userId.observeAsState()
+        if (userIdState != null) {
+            LaunchedEffect(userIdState) {
+                navController.navigate(com.example.tusbookswap.ui.Screen.FavoriteGenresScreen.route) {
+                    popUpTo(com.example.tusbookswap.ui.Screen.SignUpScreen.route) { inclusive = true }
+                }
+            }
+        }
+
+        // Already have an account button
         Button(
             onClick = { navController.navigate(com.example.tusbookswap.ui.Screen.LoginScreen.route) },
             modifier = Modifier.padding(10.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, contentColor = Color.Black),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, contentColor = Color.Black)
         ) {
             Text(
-                text = "Already have an account, Login",
+                text = "Already have an account? Login",
                 modifier = Modifier
                     .padding(4.dp)
             )
         }
     }
-
-
-
 }
-
 
 
 @Preview(showBackground = true)
