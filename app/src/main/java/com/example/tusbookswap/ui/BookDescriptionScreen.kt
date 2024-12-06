@@ -27,7 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tusbookswap.BottomNavigationBar
 import com.example.tusbookswap.R
 
-// Define custom colors
+//  custom colors
 private val TopBarColor = Color(0xFFC6BA94) // C6BA94
 private val BackgroundColor = Color(0xFFF1F1F1) // F1F1F1
 private val ButtonColor = Color(0xFFC6BA94) // Same as the top bar color

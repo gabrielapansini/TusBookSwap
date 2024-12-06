@@ -92,7 +92,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthRegViewModel = view
 
         // App Title
         Button(
-            onClick = { /* No action required here */ },
+            onClick = { /*  */ },
             modifier = Modifier
                 .width(294.dp)
                 .height(78.dp)
